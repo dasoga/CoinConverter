@@ -13,6 +13,8 @@
 		2CDCAB2C20042CF1007EA0FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2B20042CF1007EA0FC /* Assets.xcassets */; };
 		2CDCAB2F20042CF1007EA0FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2D20042CF1007EA0FC /* LaunchScreen.storyboard */; };
 		2CDCAB3A20042CF1007EA0FC /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDCAB3920042CF1007EA0FC /* CurrencyTests.swift */; };
+		2CDCAB4620042D39007EA0FC /* ApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDCAB4520042D39007EA0FC /* ApiService.swift */; };
+		2CDCAB4920042D77007EA0FC /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDCAB4820042D77007EA0FC /* Currency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,8 @@
 		2CDCAB3520042CF1007EA0FC /* CurrencyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CurrencyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDCAB3920042CF1007EA0FC /* CurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
 		2CDCAB3B20042CF1007EA0FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2CDCAB4520042D39007EA0FC /* ApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiService.swift; sourceTree = "<group>"; };
+		2CDCAB4820042D77007EA0FC /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,8 @@
 		2CDCAB2320042CF1007EA0FC /* Currency */ = {
 			isa = PBXGroup;
 			children = (
+				2CDCAB4720042D5C007EA0FC /* Model */,
+				2CDCAB4420042D25007EA0FC /* ApiService */,
 				2CDCAB2420042CF1007EA0FC /* AppDelegate.swift */,
 				2CDCAB2620042CF1007EA0FC /* ViewController.swift */,
 				2CDCAB2820042CF1007EA0FC /* Main.storyboard */,
@@ -94,6 +100,22 @@
 				2CDCAB3B20042CF1007EA0FC /* Info.plist */,
 			);
 			path = CurrencyTests;
+			sourceTree = "<group>";
+		};
+		2CDCAB4420042D25007EA0FC /* ApiService */ = {
+			isa = PBXGroup;
+			children = (
+				2CDCAB4520042D39007EA0FC /* ApiService.swift */,
+			);
+			path = ApiService;
+			sourceTree = "<group>";
+		};
+		2CDCAB4720042D5C007EA0FC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2CDCAB4820042D77007EA0FC /* Currency.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,8 +221,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CDCAB4920042D77007EA0FC /* Currency.swift in Sources */,
 				2CDCAB2720042CF1007EA0FC /* ViewController.swift in Sources */,
 				2CDCAB2520042CF1007EA0FC /* AppDelegate.swift in Sources */,
+				2CDCAB4620042D39007EA0FC /* ApiService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
