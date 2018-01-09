@@ -14,8 +14,8 @@ class ApiService: NSObject {
     
     let baseUrl = "https://api.fixer.io"
     
-    func fetchLatest(_ completion: @escaping (Currency) -> ()){
-        fetchFeedForUrlString("\(baseUrl)/latest?base=USD") { (currency) in
+    func fetchLatest(baseCoin: String ,_ completion: @escaping (Currency) -> ()){
+        fetchFeedForUrlString("\(baseUrl)/latest?base=\(baseCoin)") { (currency) in
             if let currency = currency{
                 completion(currency)
             }
@@ -46,7 +46,7 @@ class ApiService: NSObject {
                     for singleRate in rates{
                         rate.rateName = singleRate.key
                         rate.image = singleRate.key
-                        rate.value = singleRate.value as? Float
+                        rate.value = singleRate.value as? Double
                         ratesToSave.append(rate)
                     }                    
                     currency.rates = ratesToSave

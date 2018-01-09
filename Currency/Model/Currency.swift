@@ -16,7 +16,7 @@ struct Currency {
     
 struct Rate {
     var rateName: String?
-    var value: Float?
+    var value: Double?
     var image: String?
 }
 
