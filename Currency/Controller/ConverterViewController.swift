@@ -25,6 +25,8 @@ class ConverterViewController: UIViewController {
         button.setImage(#imageLiteral(resourceName: "USD"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.clipsToBounds = true
+        button.addTarget(self, action: #selector(actionCurrencyButton), for: .touchUpInside)
+        button.tag = 1
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -42,6 +44,8 @@ class ConverterViewController: UIViewController {
         button.setImage(#imageLiteral(resourceName: "USD"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.clipsToBounds = true
+        button.addTarget(self, action: #selector(actionCurrencyButton), for: .touchUpInside)
+        button.tag = 2
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -107,6 +111,8 @@ class ConverterViewController: UIViewController {
         }
     }
     
+    // MARK: - Actions
+    
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let textValue = textField.text else { return }
         if let doubleValue = Double(textValue) {
@@ -117,5 +123,28 @@ class ConverterViewController: UIViewController {
         }
         
     }
+    
+    @objc private func actionCurrencyButton(_ button: UIButton){
+        let totalCurrenciesController = TotalCurrenciesTableViewController()
+        totalCurrenciesController.allCurrenciesToShow = allRates
+        totalCurrenciesController.delegate = self
+        totalCurrenciesController.buttonType = .source
+        if button == targetCurrencyButton{
+            totalCurrenciesController.buttonType = .target
+        }
+        navigationController?.pushViewController(totalCurrenciesController, animated: true)
+    }
 
+}
+
+extension ConverterViewController: CurrencySelectedDelegate{
+    func didSelectedCurrency(rateSelected: Rate, buttonType: CurrencyButtonType) {
+        if let name = rateSelected.rateName{
+            if buttonType == .source{
+                sourceCurrencyButton.setImage(UIImage(named: name), for: .normal)
+            }else{
+                targetCurrencyButton.setImage(UIImage(named: name), for: .normal)
+            }
+        }
+    }
 }

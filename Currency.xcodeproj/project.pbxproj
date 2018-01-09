@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2C9BACAA20053527005282A3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9BACA920053527005282A3 /* Constants.swift */; };
 		2C9BACAD2005364A005282A3 /* ConverterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9BACAC2005364A005282A3 /* ConverterViewController.swift */; };
+		2CBDDFF5200581E10086F9D6 /* TotalCurrenciesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CBDDFF4200581E10086F9D6 /* TotalCurrenciesTableViewController.swift */; };
 		2CDCAB2520042CF1007EA0FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2420042CF1007EA0FC /* AppDelegate.swift */; };
 		2CDCAB2C20042CF1007EA0FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2B20042CF1007EA0FC /* Assets.xcassets */; };
 		2CDCAB2F20042CF1007EA0FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2D20042CF1007EA0FC /* LaunchScreen.storyboard */; };
@@ -30,6 +31,7 @@
 /* Begin PBXFileReference section */
 		2C9BACA920053527005282A3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		2C9BACAC2005364A005282A3 /* ConverterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterViewController.swift; sourceTree = "<group>"; };
+		2CBDDFF4200581E10086F9D6 /* TotalCurrenciesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalCurrenciesTableViewController.swift; sourceTree = "<group>"; };
 		2CDCAB2120042CF1007EA0FC /* Currency.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Currency.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDCAB2420042CF1007EA0FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CDCAB2B20042CF1007EA0FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				2C9BACAC2005364A005282A3 /* ConverterViewController.swift */,
+				2CBDDFF4200581E10086F9D6 /* TotalCurrenciesTableViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 				2C9BACAA20053527005282A3 /* Constants.swift in Sources */,
 				2CDCAB4920042D77007EA0FC /* Currency.swift in Sources */,
 				2CDCAB2520042CF1007EA0FC /* AppDelegate.swift in Sources */,
+				2CBDDFF5200581E10086F9D6 /* TotalCurrenciesTableViewController.swift in Sources */,
 				2CDCAB4620042D39007EA0FC /* ApiService.swift in Sources */,
 				2C9BACAD2005364A005282A3 /* ConverterViewController.swift in Sources */,
 			);
