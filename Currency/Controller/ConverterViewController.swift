@@ -12,7 +12,7 @@ class ConverterViewController: UIViewController {
     
     lazy var inputTextField: UITextField = {
         let tf = UITextField()
-        tf.placeholder = "$ 1 USD"
+        tf.placeholder = Constants.ONE_VALUE_MONEY
         tf.keyboardType = .numberPad
         tf.textAlignment = .center
         tf.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
@@ -20,17 +20,37 @@ class ConverterViewController: UIViewController {
         return tf
     }()
     
+    let sourceCurrencyButton: UIButton = {
+        let button = UIButton()
+        button.setImage(#imageLiteral(resourceName: "USD"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     let ammountConvertedLabel: UILabel = {
         let label = UILabel()
-        label.text = "$0.0"
+        label.text = Constants.ZERO_VALUE_MONEY
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    let baseCoin = "USD"
+    let targetCurrencyButton: UIButton = {
+        let button = UIButton()
+        button.setImage(#imageLiteral(resourceName: "USD"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageView?.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    let baseCoin = Constants.BASE_COIN
     
     var actualCurrency = Currency()
+    
+    var allRates = [Rate]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,12 +68,26 @@ class ConverterViewController: UIViewController {
         inputTextField.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         inputTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
+        // Add source currency button and constraints
+        view.addSubview(sourceCurrencyButton)
+        sourceCurrencyButton.topAnchor.constraint(equalTo: inputTextField.bottomAnchor, constant: 8).isActive = true
+        sourceCurrencyButton.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        sourceCurrencyButton.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        sourceCurrencyButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
         // Add result label and its constraints
         view.addSubview(ammountConvertedLabel)
-        ammountConvertedLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: inputTextField.bottomAnchor, constant: 8).isActive = true
+        ammountConvertedLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: sourceCurrencyButton.bottomAnchor, constant: 8).isActive = true
         ammountConvertedLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         ammountConvertedLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         ammountConvertedLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        // Add target currency button and constraints
+        view.addSubview(targetCurrencyButton)
+        targetCurrencyButton.topAnchor.constraint(equalTo: ammountConvertedLabel.bottomAnchor, constant: 8).isActive = true
+        targetCurrencyButton.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        targetCurrencyButton.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        targetCurrencyButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     private func getCurrencyData(){
@@ -62,11 +96,14 @@ class ConverterViewController: UIViewController {
             
             // Update label of last update
             let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = "MMM dd,yyyy hh:mm:ss"
+            dateFormatterPrint.dateFormat = Constants.FORMAT_DATE
             DispatchQueue.main.async {
                 self.title = dateFormatterPrint.string(from: Date())
             }
             
+            // Build rates list
+            guard let allRates = self.actualCurrency.rates else { return }
+            self.allRates = allRates
         }
     }
     
@@ -76,7 +113,7 @@ class ConverterViewController: UIViewController {
             let result = doubleValue*(self.actualCurrency.rates?[0].value)!
             ammountConvertedLabel.text = String(result)
         }else{
-            ammountConvertedLabel.text = "$0.0"
+            ammountConvertedLabel.text = Constants.ZERO_VALUE_MONEY
         }
         
     }
