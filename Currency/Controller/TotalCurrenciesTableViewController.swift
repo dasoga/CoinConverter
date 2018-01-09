@@ -27,6 +27,13 @@ class TotalCurrenciesTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
+    
+    // MARK: Private funcs
+    
+    private func setupView(){
+        tableView.register(RateTableViewCell.self, forCellReuseIdentifier: Constants.RATE_CELL_IDENTIFIER)
     }
 
     // MARK: - Table view data source

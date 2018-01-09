@@ -20,4 +20,7 @@ class Constants {
     static let ZERO_VALUE_MONEY = "$0.0"
     static let ONE_VALUE_MONEY = "$ 1 USD"
     static let BASE_COIN = "USD"
+    
+    // Cells id
+    static let RATE_CELL_IDENTIFIER = "rateCell"
 }
