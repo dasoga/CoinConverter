@@ -8,42 +8,51 @@
 
 import Foundation
 
-struct Currency: Decodable {
+struct Currency {
     var base: String?
     var date: String?
-    var rates: Rate?
+    var rates: [Rate]?
 }
     
-struct Rate: Decodable {
-    var AUD: Float?
-    var BGN: Float?
-    var BRL: Float?
-    var CAD: Float?
-    var CHF: Float?
-    var CNY: Float?
-    var CZK: Float?
-    var DKK: Float?
-    var GBP: Float?
-    var HKD: Float?
-    var HRK: Float?
-    var HUF: Float?
-    var IDR: Float?
-    var ILS: Float?
-    var INR: Float?
-    var JPY: Float?
-    var KRW: Float?
-    var MXN: Float?
-    var MYR: Float?
-    var NOK: Float?
-    var NZD: Float?
-    var PHP: Float?
-    var PLN: Float?
-    var RON: Float?
-    var RUB: Float?
-    var SEK: Float?
-    var SGD: Float?
-    var THB: Float?
-    var TRY: Float?
-    var ZAR: Float?
-    var EUR: Float?
+struct Rate {
+    var rateName: String?
+    var value: Float?
+    var image: String?
+}
+
+
+// This enum couldn't be use it with this version of API, because rates isn't an array.
+
+enum RateType: String {
+    case AUD = "AUD"
+    case BGN
+    case BRL
+    case CAD
+    case CHF
+    case CNY
+    case CZK
+    case DKK
+    case GBP
+    case HKD
+    case HRK
+    case HUF
+    case IDR
+    case ILS
+    case INR
+    case JPY
+    case KRW
+    case MXN
+    case MYR
+    case NOK
+    case NZD
+    case PHP
+    case PLN
+    case RON
+    case RUB
+    case SEK
+    case SGD
+    case THB
+    case TRY
+    case ZAR
+    case EUR
 }

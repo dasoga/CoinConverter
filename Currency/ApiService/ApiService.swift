@@ -34,8 +34,24 @@ class ApiService: NSObject {
             //Success
             guard let data = data else { return }
             do {
-                let json = try JSONDecoder().decode(Currency.self, from: data)
-                completion(json)
+                if let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]{
+                    var currency = Currency()
+                    currency.base = json[Constants.BASE_KEY] as? String
+                    currency.date = json[Constants.DATE_KEY] as? String
+                    let ratesDic = json[Constants.RATES_KEY] as? [String: Any]
+                    
+                    var rate = Rate()
+                    var ratesToSave = [Rate]()
+                    guard let rates = ratesDic else { return }
+                    for singleRate in rates{
+                        rate.rateName = singleRate.key
+                        rate.image = singleRate.key
+                        rate.value = singleRate.value as? Float
+                        ratesToSave.append(rate)
+                    }                    
+                    currency.rates = ratesToSave
+                    completion(currency)
+                }
             }catch let jsonErr {
                 print(jsonErr)
                 completion(nil)

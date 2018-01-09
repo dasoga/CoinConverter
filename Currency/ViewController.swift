@@ -23,7 +23,10 @@ class ViewController: UIViewController {
     private func getCurrency(){
         ApiService.sharedInstance.fetchLatest { (currency) in
             print(currency.base)
-            print(currency.rates?.AUD)
+            print(currency.date)
+            for rate in currency.rates!{
+                print(rate.rateName,rate.value)
+            }
         }
     }
 
