@@ -27,5 +27,5 @@ class Constants {
     // General text
     static let CHANGE_RATE_DATE_TEXT = "Change rate date..."
     
-    static let HOME_TITLTE_CONTROLLER = "Currency converter"
+    static let HOME_TITLTE_CONTROLLER = "Converter"
 }

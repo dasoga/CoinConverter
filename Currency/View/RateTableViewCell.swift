@@ -48,7 +48,7 @@ class RateTableViewCell: UITableViewCell {
         // Add constatins to flag image view
         addSubview(flagImageView)
         flagImageView.safeAreaLayoutGuide.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        flagImageView.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
+        flagImageView.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 8).isActive = true
         flagImageView.widthAnchor.constraint(equalToConstant: 50).isActive = true
         flagImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         

@@ -87,11 +87,12 @@ class ConverterViewController: UIViewController {
     
     private func setupView(){
         self.title = Constants.HOME_TITLTE_CONTROLLER
-        
         view.backgroundColor = .white
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        setupNavBar()
         
         // Add input text field and its constraints
         view.addSubview(sourceCurrencyTextField)
@@ -134,6 +135,10 @@ class ConverterViewController: UIViewController {
         dateTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
         dateTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
         dateTextField.heightAnchor.constraint(equalToConstant: 30).isActive = true
+    }
+    
+    private func setupNavBar(){
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func getCurrencyData(baseCoin: String){
@@ -199,18 +204,21 @@ class ConverterViewController: UIViewController {
         targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
     }
     
+    private func calculateRate(text: String){
+        if let doubleValue = Double(text) {
+            guard let targetValue = targetCurrency?.value, let targetName = targetCurrency?.rateName else { return }
+            let result = doubleValue * targetValue
+            targetCurrencyLabel.text = "$ " + String(result) + " " + targetName
+        }else{
+            targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
+        }
+    }
+    
     // MARK: - Actions
     
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let textValue = textField.text else { return }
-        if let doubleValue = Double(textValue) {
-            guard let targetValue = targetCurrency?.value, let targetName = targetCurrency?.rateName else { return }
-            let result = doubleValue * targetValue
-            targetCurrencyLabel.text = String(result) + " " + targetName
-        }else{
-            targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
-        }
-        
+        calculateRate(text: textValue)
     }
     
     @objc private func actionCurrencyButton(_ button: UIButton){
