@@ -13,7 +13,7 @@ class ConverterViewController: UIViewController {
     lazy var sourceCurrencyTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = Constants.ONE_VALUE_MONEY
-        tf.keyboardType = .numberPad
+        tf.keyboardType = .decimalPad
         tf.textAlignment = .center
         tf.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -90,6 +90,9 @@ class ConverterViewController: UIViewController {
         
         view.backgroundColor = .white
         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+        
         // Add input text field and its constraints
         view.addSubview(sourceCurrencyTextField)
         sourceCurrencyTextField.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
@@ -144,7 +147,7 @@ class ConverterViewController: UIViewController {
         if let sourceName = sourceCurrency?.rateName{
             baseCoin = sourceName
         }
-        ApiService.sharedInstance.fetchFromDate(date: "2017-01-03", baseCoin: baseCoin) { (currency) in
+        ApiService.sharedInstance.fetchFromDate(date: date, baseCoin: baseCoin) { (currency) in
             self.manageData(currency: currency)
             DispatchQueue.main.async {
                 self.updateView()
@@ -226,12 +229,20 @@ class ConverterViewController: UIViewController {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         let stringDate = dateFormatter.string(from: sender.date)
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let stringDateToFind = dateFormatter.string(from: sender.date)
+        
         dateTextField.text = stringDate
         lastUpdateLabel.isHidden = true
-        getCurrencyDataFromDate(date: stringDate)
+        getCurrencyDataFromDate(date: stringDateToFind)
     }
     
     @objc private func doneAction(sender: UIBarButtonItem){
+        view.endEditing(true)
+    }
+    
+    @objc private func dismissKeyboard(){
         view.endEditing(true)
     }
 
@@ -260,7 +271,7 @@ extension ConverterViewController: UITextFieldDelegate{
         datePickerView.maximumDate = Date()
         let calendar = Calendar.current
         var minDateComponent = calendar.dateComponents([.day,.month,.year], from: Date())
-        minDateComponent.day = 01
+        minDateComponent.day = 04
         minDateComponent.month = 01
         minDateComponent.year = 1999
         let minDate = calendar.date(from: minDateComponent)
