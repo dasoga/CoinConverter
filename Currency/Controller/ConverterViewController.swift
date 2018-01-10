@@ -10,7 +10,7 @@ import UIKit
 
 class ConverterViewController: UIViewController {
     
-    lazy var inputTextField: UITextField = {
+    lazy var sourceCurrencyTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = Constants.ONE_VALUE_MONEY
         tf.keyboardType = .numberPad
@@ -31,7 +31,7 @@ class ConverterViewController: UIViewController {
         return button
     }()
     
-    let ammountConvertedLabel: UILabel = {
+    let targetCurrencyLabel: UILabel = {
         let label = UILabel()
         label.text = Constants.ZERO_VALUE_MONEY
         label.textAlignment = .center
@@ -41,7 +41,6 @@ class ConverterViewController: UIViewController {
     
     let targetCurrencyButton: UIButton = {
         let button = UIButton()
-        button.setImage(#imageLiteral(resourceName: "USD"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.imageView?.clipsToBounds = true
         button.addTarget(self, action: #selector(actionCurrencyButton), for: .touchUpInside)
@@ -50,65 +49,109 @@ class ConverterViewController: UIViewController {
         return button
     }()
     
-    let baseCoin = Constants.BASE_COIN
+    let lastUpdateLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Last update: ".localize()
+        label.textAlignment = .center
+        label.textColor = .lightGray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     var actualCurrency = Currency()
     
     var allRates = [Rate]()
+    
+    var sourceCurrency: Rate?
+    var targetCurrency: Rate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        getCurrencyData()
+        getCurrencyData(baseCoin: Constants.BASE_COIN)
     }
     
     private func setupView(){
+        self.title = "Currency converter"
+        
         view.backgroundColor = .white
         
+        view.addSubview(lastUpdateLabel)
+        lastUpdateLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        lastUpdateLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        lastUpdateLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        lastUpdateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
         // Add input text field and its constraints
-        view.addSubview(inputTextField)
-        inputTextField.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        inputTextField.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        inputTextField.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        inputTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        view.addSubview(sourceCurrencyTextField)
+        sourceCurrencyTextField.safeAreaLayoutGuide.topAnchor.constraint(equalTo: lastUpdateLabel.bottomAnchor, constant: 16).isActive = true
+        sourceCurrencyTextField.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        sourceCurrencyTextField.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        sourceCurrencyTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // Add source currency button and constraints
         view.addSubview(sourceCurrencyButton)
-        sourceCurrencyButton.topAnchor.constraint(equalTo: inputTextField.bottomAnchor, constant: 8).isActive = true
+        sourceCurrencyButton.topAnchor.constraint(equalTo: sourceCurrencyTextField.bottomAnchor, constant: 8).isActive = true
         sourceCurrencyButton.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         sourceCurrencyButton.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         sourceCurrencyButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
         // Add result label and its constraints
-        view.addSubview(ammountConvertedLabel)
-        ammountConvertedLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: sourceCurrencyButton.bottomAnchor, constant: 8).isActive = true
-        ammountConvertedLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        ammountConvertedLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        ammountConvertedLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        view.addSubview(targetCurrencyLabel)
+        targetCurrencyLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: sourceCurrencyButton.bottomAnchor, constant: 8).isActive = true
+        targetCurrencyLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        targetCurrencyLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        targetCurrencyLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         // Add target currency button and constraints
         view.addSubview(targetCurrencyButton)
-        targetCurrencyButton.topAnchor.constraint(equalTo: ammountConvertedLabel.bottomAnchor, constant: 8).isActive = true
+        targetCurrencyButton.topAnchor.constraint(equalTo: targetCurrencyLabel.bottomAnchor, constant: 8).isActive = true
         targetCurrencyButton.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         targetCurrencyButton.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         targetCurrencyButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
-    private func getCurrencyData(){
+    private func getCurrencyData(baseCoin: String){
         ApiService.sharedInstance.fetchLatest(baseCoin: baseCoin) { (currency) in
             self.actualCurrency = currency
             
             // Update label of last update
             let dateFormatterPrint = DateFormatter()
             dateFormatterPrint.dateFormat = Constants.FORMAT_DATE
-            DispatchQueue.main.async {
-                self.title = dateFormatterPrint.string(from: Date())
-            }
             
             // Build rates list
             guard let allRates = self.actualCurrency.rates else { return }
             self.allRates = allRates
+            
+            // Assign default target
+            if self.targetCurrency == nil{
+                self.targetCurrency = allRates[0]
+            }else{
+                guard let actualTargetCurrency = self.targetCurrency else { return }
+                let targets = allRates.filter { $0.rateName == actualTargetCurrency.rateName }
+                self.targetCurrency = targets.first
+            }
+            
+            DispatchQueue.main.async {
+                self.lastUpdateLabel.text = "Last update: \(dateFormatterPrint.string(from: Date()))"
+                guard let imageName = self.targetCurrency?.rateName else { return }
+                self.targetCurrencyButton.setImage(UIImage(named: imageName), for: .normal)
+            }
         }
+    }
+    
+    private func updateView(){
+        if let sourceName = sourceCurrency?.rateName{
+            sourceCurrencyButton.setImage(UIImage(named: sourceName), for: .normal)
+            sourceCurrencyTextField.placeholder = "$1 \(sourceName)"
+        }
+        
+        if let targetName = targetCurrency?.rateName{
+            targetCurrencyButton.setImage(UIImage(named: targetName), for: .normal)
+        }
+        sourceCurrencyTextField.text = ""
+        targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
+        
     }
     
     // MARK: - Actions
@@ -116,10 +159,11 @@ class ConverterViewController: UIViewController {
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let textValue = textField.text else { return }
         if let doubleValue = Double(textValue) {
-            let result = doubleValue*(self.actualCurrency.rates?[0].value)!
-            ammountConvertedLabel.text = String(result)
+            guard let targetValue = targetCurrency?.value, let targetName = targetCurrency?.rateName else { return }
+            let result = doubleValue * targetValue
+            targetCurrencyLabel.text = String(result) + " " + targetName
         }else{
-            ammountConvertedLabel.text = Constants.ZERO_VALUE_MONEY
+            targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
         }
         
     }
@@ -139,12 +183,13 @@ class ConverterViewController: UIViewController {
 
 extension ConverterViewController: CurrencySelectedDelegate{
     func didSelectedCurrency(rateSelected: Rate, buttonType: CurrencyButtonType) {
-        if let name = rateSelected.rateName{
-            if buttonType == .source{
-                sourceCurrencyButton.setImage(UIImage(named: name), for: .normal)
-            }else{
-                targetCurrencyButton.setImage(UIImage(named: name), for: .normal)
-            }
+        if buttonType == .source{
+            sourceCurrency = rateSelected
+            guard let rateName = rateSelected.rateName else { return }
+            getCurrencyData(baseCoin: rateName)
+        }else{
+            targetCurrency = rateSelected
         }
+        self.updateView()
     }
 }

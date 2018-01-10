@@ -63,6 +63,7 @@ class RateTableViewCell: UITableViewCell {
     private func setupData(){
         guard let name = actualRate?.rateName else { return }
         flagImageView.image = UIImage(named: name)
+        rateNameLabel.text = name
     }
 
 }

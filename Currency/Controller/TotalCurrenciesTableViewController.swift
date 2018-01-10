@@ -50,9 +50,9 @@ class TotalCurrenciesTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.RATE_CELL_IDENTIFIER, for: indexPath) as! RateTableViewCell
         if let all = allCurrenciesToShow{
-            cell.textLabel?.text = all[indexPath.row].rateName
+            cell.actualRate =  all[indexPath.row]
         }
         return cell
     }
@@ -61,5 +61,9 @@ class TotalCurrenciesTableViewController: UITableViewController {
         guard let rateSelected = allCurrenciesToShow?[indexPath.row] else { return }
         delegate?.didSelectedCurrency(rateSelected: rateSelected, buttonType: buttonType)
         navigationController?.popViewController(animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
 }

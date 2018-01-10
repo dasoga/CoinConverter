@@ -11,6 +11,7 @@
 		2C9BACAD2005364A005282A3 /* ConverterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9BACAC2005364A005282A3 /* ConverterViewController.swift */; };
 		2CBDDFF5200581E10086F9D6 /* TotalCurrenciesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CBDDFF4200581E10086F9D6 /* TotalCurrenciesTableViewController.swift */; };
 		2CBDDFF82005869A0086F9D6 /* RateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CBDDFF72005869A0086F9D6 /* RateTableViewCell.swift */; };
+		2CDA2FCF20058BB300A26D7F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDA2FCE20058BB300A26D7F /* Extensions.swift */; };
 		2CDCAB2520042CF1007EA0FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2420042CF1007EA0FC /* AppDelegate.swift */; };
 		2CDCAB2C20042CF1007EA0FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2B20042CF1007EA0FC /* Assets.xcassets */; };
 		2CDCAB2F20042CF1007EA0FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CDCAB2D20042CF1007EA0FC /* LaunchScreen.storyboard */; };
@@ -34,6 +35,7 @@
 		2C9BACAC2005364A005282A3 /* ConverterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterViewController.swift; sourceTree = "<group>"; };
 		2CBDDFF4200581E10086F9D6 /* TotalCurrenciesTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalCurrenciesTableViewController.swift; sourceTree = "<group>"; };
 		2CBDDFF72005869A0086F9D6 /* RateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTableViewCell.swift; sourceTree = "<group>"; };
+		2CDA2FCE20058BB300A26D7F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		2CDCAB2120042CF1007EA0FC /* Currency.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Currency.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CDCAB2420042CF1007EA0FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2CDCAB2B20042CF1007EA0FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				2C9BACA920053527005282A3 /* Constants.swift */,
+				2CDA2FCE20058BB300A26D7F /* Extensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				2C9BACAA20053527005282A3 /* Constants.swift in Sources */,
 				2CDCAB4920042D77007EA0FC /* Currency.swift in Sources */,
 				2CDCAB2520042CF1007EA0FC /* AppDelegate.swift in Sources */,
+				2CDA2FCF20058BB300A26D7F /* Extensions.swift in Sources */,
 				2CBDDFF5200581E10086F9D6 /* TotalCurrenciesTableViewController.swift in Sources */,
 				2CBDDFF82005869A0086F9D6 /* RateTableViewCell.swift in Sources */,
 				2CDCAB4620042D39007EA0FC /* ApiService.swift in Sources */,
