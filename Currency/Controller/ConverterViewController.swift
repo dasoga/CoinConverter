@@ -35,6 +35,7 @@ class ConverterViewController: UIViewController {
         let label = UILabel()
         label.text = Constants.ZERO_VALUE_MONEY
         label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 36)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -58,6 +59,19 @@ class ConverterViewController: UIViewController {
         return label
     }()
     
+    lazy var dateTextField: UITextField = {
+        let tf = UITextField()
+        tf.text = Constants.CHANGE_RATE_DATE_TEXT
+        tf.textAlignment = .center
+        tf.delegate = self
+        tf.layer.borderWidth = 1
+        tf.layer.cornerRadius = 10
+        tf.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        tf.translatesAutoresizingMaskIntoConstraints = false
+        return tf
+    }()
+    
+    
     var actualCurrency = Currency()
     
     var allRates = [Rate]()
@@ -72,22 +86,16 @@ class ConverterViewController: UIViewController {
     }
     
     private func setupView(){
-        self.title = "Currency converter"
+        self.title = Constants.HOME_TITLTE_CONTROLLER
         
         view.backgroundColor = .white
         
-        view.addSubview(lastUpdateLabel)
-        lastUpdateLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        lastUpdateLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
-        lastUpdateLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        lastUpdateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        
         // Add input text field and its constraints
         view.addSubview(sourceCurrencyTextField)
-        sourceCurrencyTextField.safeAreaLayoutGuide.topAnchor.constraint(equalTo: lastUpdateLabel.bottomAnchor, constant: 16).isActive = true
+        sourceCurrencyTextField.safeAreaLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         sourceCurrencyTextField.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         sourceCurrencyTextField.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        sourceCurrencyTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        sourceCurrencyTextField.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
         // Add source currency button and constraints
         view.addSubview(sourceCurrencyButton)
@@ -101,7 +109,7 @@ class ConverterViewController: UIViewController {
         targetCurrencyLabel.safeAreaLayoutGuide.topAnchor.constraint(equalTo: sourceCurrencyButton.bottomAnchor, constant: 8).isActive = true
         targetCurrencyLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         targetCurrencyLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        targetCurrencyLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        targetCurrencyLabel.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
         // Add target currency button and constraints
         view.addSubview(targetCurrencyButton)
@@ -109,34 +117,69 @@ class ConverterViewController: UIViewController {
         targetCurrencyButton.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         targetCurrencyButton.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         targetCurrencyButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        // Button label of updated
+        view.addSubview(lastUpdateLabel)
+        lastUpdateLabel.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        lastUpdateLabel.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        lastUpdateLabel.safeAreaLayoutGuide.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        lastUpdateLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        // Add date textfield
+        view.addSubview(dateTextField)
+        dateTextField.bottomAnchor.constraint(equalTo: lastUpdateLabel.topAnchor, constant: -30).isActive = true
+        dateTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
+        dateTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
+        dateTextField.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     private func getCurrencyData(baseCoin: String){
         ApiService.sharedInstance.fetchLatest(baseCoin: baseCoin) { (currency) in
-            self.actualCurrency = currency
-            
-            // Update label of last update
-            let dateFormatterPrint = DateFormatter()
-            dateFormatterPrint.dateFormat = Constants.FORMAT_DATE
-            
-            // Build rates list
-            guard let allRates = self.actualCurrency.rates else { return }
-            self.allRates = allRates
-            
-            // Assign default target
-            if self.targetCurrency == nil{
-                self.targetCurrency = allRates[0]
-            }else{
-                guard let actualTargetCurrency = self.targetCurrency else { return }
-                let targets = allRates.filter { $0.rateName == actualTargetCurrency.rateName }
-                self.targetCurrency = targets.first
-            }
-            
+            self.manageData(currency: currency)
+        }
+    }
+    
+    private func getCurrencyDataFromDate(date: String){
+        var baseCoin = Constants.BASE_COIN
+        if let sourceName = sourceCurrency?.rateName{
+            baseCoin = sourceName
+        }
+        ApiService.sharedInstance.fetchFromDate(date: "2017-01-03", baseCoin: baseCoin) { (currency) in
+            self.manageData(currency: currency)
             DispatchQueue.main.async {
-                self.lastUpdateLabel.text = "Last update: \(dateFormatterPrint.string(from: Date()))"
-                guard let imageName = self.targetCurrency?.rateName else { return }
-                self.targetCurrencyButton.setImage(UIImage(named: imageName), for: .normal)
+                self.updateView()
             }
+        }
+    }
+    
+    private func manageData(currency: Currency){
+        self.actualCurrency = currency
+        
+        // Build rates list
+        guard let allRates = self.actualCurrency.rates else { return }
+        self.allRates = allRates
+        
+        // Assign default target
+        if self.targetCurrency == nil{
+            self.targetCurrency = allRates[0]
+        }else{
+            guard let actualTargetCurrency = self.targetCurrency else { return }
+            let targets = allRates.filter { $0.rateName == actualTargetCurrency.rateName }
+            if let firstTargetExist = targets.first{
+                self.targetCurrency = firstTargetExist
+            }else{
+                self.targetCurrency = allRates[0]
+            }
+        }
+        
+        // Update label of last update
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = Constants.FORMAT_DATE
+        // Return to main thread to update UI
+        DispatchQueue.main.async {
+            self.lastUpdateLabel.text = "Last update: \(dateFormatterPrint.string(from: Date()))"
+            guard let imageName = self.targetCurrency?.rateName else { return }
+            self.targetCurrencyButton.setImage(UIImage(named: imageName), for: .normal)
         }
     }
     
@@ -151,12 +194,11 @@ class ConverterViewController: UIViewController {
         }
         sourceCurrencyTextField.text = ""
         targetCurrencyLabel.text = Constants.ZERO_VALUE_MONEY
-        
     }
     
     // MARK: - Actions
     
-    @objc func textFieldDidChange(_ textField: UITextField) {
+    @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let textValue = textField.text else { return }
         if let doubleValue = Double(textValue) {
             guard let targetValue = targetCurrency?.value, let targetName = targetCurrency?.rateName else { return }
@@ -178,6 +220,20 @@ class ConverterViewController: UIViewController {
         }
         navigationController?.pushViewController(totalCurrenciesController, animated: true)
     }
+    
+    @objc private func datePickerValueChanged(sender:UIDatePicker){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        let stringDate = dateFormatter.string(from: sender.date)
+        dateTextField.text = stringDate
+        lastUpdateLabel.isHidden = true
+        getCurrencyDataFromDate(date: stringDate)
+    }
+    
+    @objc private func doneAction(sender: UIBarButtonItem){
+        view.endEditing(true)
+    }
 
 }
 
@@ -190,6 +246,40 @@ extension ConverterViewController: CurrencySelectedDelegate{
         }else{
             targetCurrency = rateSelected
         }
+        dateTextField.text = Constants.CHANGE_RATE_DATE_TEXT
+        lastUpdateLabel.isHidden = false
         self.updateView()
+    }
+}
+
+
+extension ConverterViewController: UITextFieldDelegate{
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        let datePickerView:UIDatePicker = UIDatePicker()
+        datePickerView.datePickerMode = UIDatePickerMode.date
+        datePickerView.maximumDate = Date()
+        let calendar = Calendar.current
+        var minDateComponent = calendar.dateComponents([.day,.month,.year], from: Date())
+        minDateComponent.day = 01
+        minDateComponent.month = 01
+        minDateComponent.year = 1999
+        let minDate = calendar.date(from: minDateComponent)
+        datePickerView.minimumDate = minDate
+        dateTextField.inputView = datePickerView
+        
+        let toolBar = UIToolbar()
+        toolBar.barStyle = UIBarStyle.default
+        toolBar.isTranslucent = true
+        toolBar.tintColor = .black
+        toolBar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(title: "Done".localize(), style: .plain, target: self, action: #selector(doneAction))
+        
+        toolBar.setItems([doneButton], animated: false)
+        toolBar.isUserInteractionEnabled = true
+        
+        dateTextField.inputAccessoryView = toolBar
+        
+        datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: UIControlEvents.valueChanged)
     }
 }

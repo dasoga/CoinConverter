@@ -23,4 +23,9 @@ class Constants {
     
     // Cells id
     static let RATE_CELL_IDENTIFIER = "rateCell"
+    
+    // General text
+    static let CHANGE_RATE_DATE_TEXT = "Change rate date..."
+    
+    static let HOME_TITLTE_CONTROLLER = "Currency converter"
 }

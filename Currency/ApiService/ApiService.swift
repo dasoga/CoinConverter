@@ -21,6 +21,14 @@ class ApiService: NSObject {
             }
         }
     }
+    
+    func fetchFromDate(date: String, baseCoin: String ,_ completion: @escaping (Currency) -> ()){
+        fetchFeedForUrlString("\(baseUrl)/\(date)?base=\(baseCoin)") { (currency) in
+            if let currency = currency{
+                completion(currency)
+            }
+        }
+    }
 
     
     func fetchFeedForUrlString(_ urlString:String, completion: @escaping (Currency?) -> ()){
